@@ -12,6 +12,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import os
+
 import httpx
 from mcp.server.fastmcp import FastMCP
 
@@ -492,7 +494,8 @@ def http_request_json(
     timeout: int | None = None,
 ) -> HttpResult:
     config = get_config()
-    base_url = config["lmstudio"]["base_url"].rstrip("/")
+    base_url = os.environ.get("LMSTUDIO_BASE_URL") or config["lmstudio"]["base_url"]
+    base_url = base_url.rstrip("/")
     request_url = f"{base_url}{endpoint}"
     timeout_value = timeout or int(config["lmstudio"].get("timeout_seconds", 30))
     headers: dict[str, str] = {"Content-Type": "application/json"}
@@ -1181,7 +1184,8 @@ def self_check_internal() -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
     try:
         cfg = get_config()
-        checks.append({"check": "config_valid", "ok": True, "detail": f"base_url={cfg['lmstudio']['base_url']}"})
+        effective_url = os.environ.get("LMSTUDIO_BASE_URL") or cfg['lmstudio']['base_url']
+        checks.append({"check": "config_valid", "ok": True, "detail": f"base_url={effective_url}"})
     except Exception as e:
         checks.append({"check": "config_valid", "ok": False, "detail": str(e)})
     try:
