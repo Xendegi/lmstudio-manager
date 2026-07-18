@@ -83,7 +83,23 @@ python -m venv .venv
 
 ## Cross-Network Setup
 
-If LM Studio runs on a different machine than the MCP server, configure `base_url` in `~/lmstudio-mcp-data/lmstudio_manager_config.json`:
+If LM Studio runs on a different machine than the MCP server, pass the `LMSTUDIO_BASE_URL` environment variable:
+
+```json
+{
+  "mcpServers": {
+    "lmstudio-manager": {
+      "command": "/path/to/python",
+      "args": ["/path/to/lmstudio_manager.py"],
+      "env": {
+        "LMSTUDIO_BASE_URL": "http://192.168.2.100:1234"
+      }
+    }
+  }
+}
+```
+
+Or edit `~/lmstudio-mcp-data/lmstudio_manager_config.json` directly:
 
 ```json
 {
