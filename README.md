@@ -41,7 +41,7 @@ An **MCP server** (Model Context Protocol) for [LM Studio](https://lmstudio.ai).
 ## Deployment — Linux
 
 ```bash
-git clone https://github.com/athenamiro/lmstudio-manager.git
+git clone https://github.com/Xendegi/lmstudio-manager.git
 cd lmstudio-manager
 python3 -m venv .venv
 .venv/bin/pip install mcp httpx psutil
@@ -64,7 +64,7 @@ EOF
 ## Deployment — Windows
 
 ```powershell
-git clone https://github.com/athenamiro/lmstudio-manager.git
+git clone https://github.com/Xendegi/lmstudio-manager.git
 cd lmstudio-manager
 python -m venv .venv
 .venv\Scripts\pip install mcp httpx psutil
