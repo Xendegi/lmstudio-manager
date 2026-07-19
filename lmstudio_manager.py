@@ -6,6 +6,7 @@ import json
 import platform
 import re
 import shutil
+import threading
 import time
 from dataclasses import dataclass
 from datetime import datetime, timezone
@@ -65,6 +66,9 @@ DEFAULT_CONFIG: dict[str, Any] = {
             "/api/v1/chat",
         ],
     },
+    "main_model": "qwen/qwen3.5-9b",
+    "auto_unload_aux": True,
+    "auto_unload_interval_seconds": 30,
     "benchmark": {
         "repeat_count": 1,
         "max_tokens": 120,
@@ -1491,8 +1495,47 @@ def best_model_for_task(category: str = "general") -> dict[str, Any]:
     return best_model_for_task_internal(category=category)
 
 
+def _aux_unload_watchdog() -> None:
+    """Background thread: periodically unload any model that isn't the main model."""
+    while True:
+        time.sleep(30)
+        try:
+            config = get_config()
+            if not config.get("auto_unload_aux", True):
+                continue
+            main_model = config.get("main_model", "")
+            if not main_model:
+                continue
+            listed = list_models_internal()
+            if not listed.get("ok"):
+                continue
+            for model in listed.get("models", []):
+                instances = model.get("loaded_instances", [])
+                if not instances:
+                    continue
+                model_id = model.get("id", "")
+                if model_id == main_model:
+                    continue
+                for inst in instances:
+                    inst_id = inst.get("id", model_id)
+                    payload = {"instance_id": inst_id}
+                    config2 = get_config()
+                    endpoint, result = try_endpoints("POST", config2["lmstudio"]["model_unload_endpoints"], payload=payload, timeout=30)
+                    if result.ok:
+                        print(f"[auto-unload] Unloaded auxiliary model: {inst_id}")
+                    else:
+                        print(f"[auto-unload] Failed to unload {inst_id}: {result.error_message}")
+        except Exception as exc:
+            print(f"[auto-unload] Watchdog error: {exc}")
+
+
 def main() -> None:
     ensure_all_files()
+    config = get_config()
+    if config.get("auto_unload_aux", True):
+        t = threading.Thread(target=_aux_unload_watchdog, daemon=True)
+        t.start()
+        print("[auto-unload] Watchdog started")
     mcp.run()
 
 
