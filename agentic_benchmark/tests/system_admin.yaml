@@ -1,0 +1,154 @@
+# System Administration Test Cases
+# Each test has verifiable outcomes on the Linux system
+
+tests:
+  # === EASY ===
+  - id: sysadmin_easy_1
+    difficulty: easy
+    problem: "Create a file named '/tmp/benchmark_test_1.txt' with the content 'Hello from benchmark'. Verify the file exists and show its content."
+    expected_outcomes:
+      - type: file_exists
+        path: "/tmp/benchmark_test_1.txt"
+      - type: file_content
+        path: "/tmp/benchmark_test_1.txt"
+        contains: "Hello from benchmark"
+    points: 10
+
+  - id: sysadmin_easy_2
+    difficulty: easy
+    problem: "List all running Python processes on the system. How many are there?"
+    expected_outcomes:
+      - type: command_output
+        command: "ps aux | grep python | grep -v grep | wc -l"
+        min_value: 1
+    points: 10
+
+  - id: sysadmin_easy_3
+    difficulty: easy
+    problem: "Show the current system memory usage. How much total RAM does the system have?"
+    expected_outcomes:
+      - type: command_output
+        command: "free -h | grep Mem | awk '{print $2}'"
+        contains: "Gi"
+    points: 10
+
+  # === MEDIUM ===
+  - id: sysadmin_medium_1
+    difficulty: medium
+    problem: |
+      Create a directory structure at /tmp/benchmark_structure/ with:
+      - projects/
+        - project_a/
+          - src/
+          - tests/
+        - project_b/
+          - src/
+          - tests/
+      
+      Verify the structure exists by listing it recursively.
+    expected_outcomes:
+      - type: directory_exists
+        path: "/tmp/benchmark_structure/projects/project_a/src"
+      - type: directory_exists
+        path: "/tmp/benchmark_structure/projects/project_a/tests"
+      - type: directory_exists
+        path: "/tmp/benchmark_structure/projects/project_b/src"
+      - type: directory_exists
+        path: "/tmp/benchmark_structure/projects/project_b/tests"
+    points: 20
+
+  - id: sysadmin_medium_2
+    difficulty: medium
+    problem: |
+      Write a Python script to /tmp/benchmark_script.py that:
+      1. Reads /etc/hostname
+      2. Gets the current user name
+      3. Gets the current working directory
+      4. Prints all three values formatted as:
+         "Host: {hostname}, User: {user}, CWD: {cwd}"
+      
+      Run the script and show the output.
+    expected_outcomes:
+      - type: file_exists
+        path: "/tmp/benchmark_script.py"
+      - type: command_output
+        command: "python3 /tmp/benchmark_script.py"
+        contains: "Host:"
+        also_contains: "User:"
+    points: 20
+
+  - id: sysadmin_medium_3
+    difficulty: medium
+    problem: |
+      Create a cron job entry that would run a backup script every day at 3 AM.
+      Don't actually install it, just show the crontab line that would be needed
+      and verify it's syntactically correct by parsing it.
+    expected_outcomes:
+      - type: output_contains
+        pattern: "0 3 * * *"
+    points: 20
+
+  # === HARD ===
+  - id: sysadmin_hard_1
+    difficulty: hard
+    problem: |
+      Write a comprehensive system health check script at /tmp/health_check.sh that:
+      1. Checks disk usage and warns if any partition is >80% full
+      2. Checks memory usage and warns if available <1GB
+      3. Checks if SSH service is running
+      4. Counts active network connections
+      5. Outputs a JSON report with all findings
+      
+      Run the script and show the JSON output.
+    expected_outcomes:
+      - type: file_exists
+        path: "/tmp/health_check.sh"
+      - type: command_output
+        command: "bash /tmp/health_check.sh"
+        is_valid_json: true
+    points: 30
+
+  - id: sysadmin_hard_2
+    difficulty: hard
+    problem: |
+      Set up a simple monitoring system:
+      1. Create /tmp/monitor.log
+      2. Write a script /tmp/monitor.sh that appends the current timestamp 
+         and CPU usage to the log every second
+      3. Let it run for 5 seconds
+      4. Stop it
+      5. Show the log file with at least 5 entries
+      
+      The log format should be: "YYYY-MM-DD HH:MM:SS - CPU: XX%"
+    expected_outcomes:
+      - type: file_exists
+        path: "/tmp/monitor.log"
+      - type: file_line_count
+        path: "/tmp/monitor.log"
+        min_lines: 5
+    points: 30
+
+  - id: sysadmin_hard_3
+    difficulty: hard
+    problem: |
+      Create a mini log analyzer:
+      1. Generate a fake log file at /tmp/app.log with 20 entries mixing:
+         - INFO messages
+         - WARNING messages  
+         - ERROR messages
+      2. Write a Python script /tmp/analyze_logs.py that:
+         - Counts occurrences of each level
+         - Finds the most common error message
+         - Calculates the error rate (errors / total entries)
+         - Outputs results as JSON
+      
+      Run the analyzer and show the JSON output.
+    expected_outcomes:
+      - type: file_exists
+        path: "/tmp/app.log"
+      - type: file_exists
+        path: "/tmp/analyze_logs.py"
+      - type: command_output
+        command: "python3 /tmp/analyze_logs.py"
+        is_valid_json: true
+    points: 30

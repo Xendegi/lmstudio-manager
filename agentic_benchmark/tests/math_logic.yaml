@@ -1,0 +1,84 @@
+# Math & Logic Reasoning Test Cases
+# Each test has a verifiable ground truth answer
+
+tests:
+  # === EASY ===
+  - id: math_easy_1
+    difficulty: easy
+    problem: "Solve for x: 3x + 7 = 22"
+    expected_answer: "5"
+    evaluation_type: numeric_match
+    points: 10
+
+  - id: math_easy_2
+    difficulty: easy
+    problem: "A train travels at 60 mph for 2.5 hours. How far does it travel in miles?"
+    expected_answer: "150"
+    evaluation_type: numeric_match
+    points: 10
+
+  - id: math_easy_3
+    difficulty: easy
+    problem: "What is 15% of 240?"
+    expected_answer: "36"
+    evaluation_type: numeric_match
+    points: 10
+
+  # === MEDIUM ===
+  - id: math_medium_1
+    difficulty: medium
+    problem: "A rectangular garden is 3 times as long as it is wide. If the perimeter is 64 meters, what is the area in square meters?"
+    expected_answer: "192"
+    evaluation_type: numeric_match
+    points: 20
+
+  - id: math_medium_2
+    difficulty: medium
+    problem: "If you invest $5000 at 6% annual compound interest, how much will you have after 3 years? Round to the nearest cent."
+    expected_answer: "5955.08"
+    evaluation_type: numeric_match
+    tolerance: 0.01
+    points: 20
+
+  - id: math_medium_3
+    difficulty: medium
+    problem: "A system has 3 servers. Server A handles 40% of traffic, Server B handles 35%, Server C handles 25%. If Server A goes down, what percentage of its traffic gets redistributed equally to B and C? What is Server B's new total load percentage?"
+    expected_answer: "55"
+    evaluation_type: numeric_match
+    points: 20
+
+  # === HARD ===
+  - id: math_hard_1
+    difficulty: hard
+    problem: |
+      Five houses in a row are each painted a different color.
+      The green house is immediately to the right of the ivory house.
+      The red house is in the middle.
+      The yellow house is on the far left.
+      The blue house is on the far right.
+      
+      What is the color order from left to right?
+    expected_answer: "yellow, ivory, red, green, blue"
+    evaluation_type: exact_match_ignore_case
+    points: 30
+
+  - id: math_hard_2
+    difficulty: hard
+    problem: |
+      A farmer has chickens and rabbits. He counts 20 heads and 56 legs total.
+      How many chickens and how many rabbits does he have?
+    expected_answer: "12 chickens, 8 rabbits"
+    evaluation_type: custom
+    scoring_function: "check_chickens_rabbits"
+    points: 30
+
+  - id: math_hard_3
+    difficulty: hard
+    problem: |
+      You have 12 identical-looking balls. One is either heavier or lighter than the rest.
+      Using a balance scale exactly 3 times, describe how to identify the odd ball and whether it's heavier or lighter.
+      
+      Provide your answer as a step-by-step procedure.
+    expected_answer: "divide_into_groups"
+    evaluation_type: procedure_check
+    points: 30
