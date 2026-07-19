@@ -228,4 +228,4 @@ Created automatically at `~/lmstudio-mcp-data/`:
 
 ## License
 
-MIT
+Self
