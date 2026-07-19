@@ -14,6 +14,9 @@ from typing import Any
 
 import os
 
+for _var in ("ALL_PROXY", "all_proxy", "HTTP_PROXY", "http_proxy", "HTTPS_PROXY", "https_proxy"):
+    os.environ.pop(_var, None)
+
 import httpx
 from mcp.server.fastmcp import FastMCP
 
